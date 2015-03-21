@@ -27,29 +27,29 @@ int main(int argc, char const *argv[])
 		perror("socket create error!");
 		return -1;
 	}
-	if (bind(listenfd, (struct sockaddr * )&server_sock, sizeof(struct sockaddr)) < 0)
+	if (bind(listenfd, (struct sockaddr * )&server_sock, sizeof(server_sock)) < 0)
 	{
 		perror("bind error!\n");
 		return -1;
 	}
 	if (listen(listenfd, 8) == 0) 
 	{
+		socklen_t length = sizeof(client_sock);
 		for (; ;) 
 		{
-			connfd = accept(listenfd, (struct sockaddr * )&client_sock, sizeof(struct sockaddr_in));
+			connfd = accept(listenfd, (struct sockaddr * )&client_sock, &length);
 			printf("accept client %s: %d\n", inet_ntoa(client_sock.sin_addr), client_sock.sin_port);
-			
 			if ((pid = fork()) == 0)
 			{   //子线程复制了主线程的listenfd和clientfd，所以先关掉listenfd
 				close(listenfd);
 				message_len = send(connfd, "Welcome to my server\0", 21, 0);
-				message_len = recv(client_sock, buf, 2048, 0);
+				message_len = recv(connfd, buf, 2048, 0);
 				buf[message_len] = '\0';
 				if (message_len > 0)
 				{
 					printf("Receive client message: %s\n", buf);
 				}
-				close(client_sock);
+				close(connfd);
 				exit(0);
 			}
 			//clientfd交给子线程处理后，主线程关掉自己内存中的clientfs
