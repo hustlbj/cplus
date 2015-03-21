@@ -20,6 +20,12 @@ int main(int argc, char const *argv[])
 	remote_addr.sin_family = AF_INET;
 	remote_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	remote_addr.sin_port = htons(8888);
+	connfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (connfd < 0)
+	{
+		perror("socket error!");
+		return -1;
+	}
 	if (connect(connfd, (struct sockaddr *)&remote_addr, sizeof(struct sockaddr)) < 0)
 	{
 		perror("connect error!");
