@@ -2,6 +2,7 @@
 * fork构建最简单的并发服务器
 */
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
