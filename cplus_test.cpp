@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <malloc.h>
+#include <assert.h>
 
 int main(int argc, char const *argv[])
 {
@@ -39,7 +40,7 @@ int main(int argc, char const *argv[])
 	arrayPoint = ap1; //所以直接赋值给一个同类型数组指针
 	//对于一维数组，应用数组指针
 	int ap2[10];
-	int (*arrayPoint1)[10] = &a; //一维数组的数组名是int指针即int *，所以再次取址得到数组指针&a的类型是int (* )[10]
+	int (*arrayPoint1)[10] = &ap2; //一维数组的数组名是int指针即int *，所以再次取址得到数组指针&a的类型是int (* )[10]
 	int *point1 = ap2;  // 直接将一维数组的数组名int *类型赋值给int *指针
 
 
@@ -47,10 +48,16 @@ int main(int argc, char const *argv[])
 	char ca1[] = {'C', '+', '+', '+', '\0'}; //末尾添加了'\0'的字符数组
 	char ca2[] = "C++++"; //字符数组存储的字符串常量，直接保存在栈中，可以修改元素，编译器自动在末尾添加null
 	const char* ca3 = "C+++++"; //指针指向字符串常量，字符串保存在字符常量区，元素不能被修改，可以通过数组下标访问元素
-	//sizeof可以求数组长度，sizeof(指针)则是指针所占的大小，一般是4字节
+	//sizeof可以求数组长度（数组的总字节数），sizeof(指针)则是指针所占的大小，一般是4字节
 	std::cout << sizeof(ca1) << sizeof(ca2) << sizeof(ca3) << std::endl; //5,6,4
 	//strlen是C风格字符串标准库中的求字符串长度的函数，必须以null结束字符串
 	std::cout << strlen(ca1) << strlen(ca2) << strlen(ca3) << std::endl; //4,5,6
+	//遍历C风格字符串
+	const char* cp = "some value";
+	while (*cp) {
+		std::cout << *cp << std::endl;
+		++cp;
+	}
 
 	return 0;
 }
@@ -100,4 +107,84 @@ class B //考虑内存对齐的话是16
 	short b; //2
 	int c; //4
 	char d; //1
+};
+
+// Debug版本中有ASSERT断言保护，在Release中就会删掉ASSERT断言
+//strlen求C风格字符串的长度
+int cstr_strlen1(const char* str)
+{
+	//判断指针是否为NULL
+	assert(str != NULL);
+	int len = 0;
+	while ((*str++) != '\0')
+		len++;	
+	return len;
+}
+//不用变量 用递归方式实现strlen
+int cstr_strlen2(const char* str)
+{
+	assert(str != NULL);
+	return *str == '\0' ? 0 : (1+strlen(++str));
+}
+//另一种求C风格字符串的长度
+int cstr_strlen3(const char* x) 
+{
+	const char* y = x;
+	while (*y++)
+		;
+	return (y-x-1);
+}
+//实现strcmp
+int cstr_strcmp(const char* str1, const char* str2)
+{
+	//要求两个字符串均不为空
+	assert(str1 != NULL && str2 != NULL);
+	int ret = 0;
+	//最开始已经判断了不为空，&& str1放在后面判断即可
+	while (!(ret = *(unsigned char* )str1 - *(unsigned char * )str2) && str1)
+	{
+		str1 ++;
+		str2 ++;
+	}
+	if (ret < 0) ret = -1;
+	else if (ret > 0) ret = 1;
+	return ret;
+}
+//两个C风格字符串的拼接
+char* cstr_strcat(char* strDest, const char* strSrc)
+{
+	char* address = strDest;
+	assert(strDest != NULL && strSrc != NULL);
+	//是不是先用strlen判断一下目标地址的大小是否够cat
+	while (*strDest ++)
+		;
+	while (*strDest++ = *strSrc ++)
+		;
+	return address;
+}
+//C风格字符串的复制
+char* cstr_strcpy(char* strDest, const char* strSrc)
+{
+	assert(strDest != NULL && strSrc != NULL);
+	char* strD = strDest;
+	while (*strDest++ = *strSrc ++)
+		;
+	return strD;
+}
+
+//从C风格字符串中去除某个字符
+char* cstr_remove_ch(char* str, char ch)
+{
+	char* it1 = str;
+	char* it2 = str;
+	while (*it2 != '\0')
+	{
+		while (*it2 == ch)
+		{
+			++it2;
+		}
+		*it1++ = *it2++;
+	}
+	*it1 = '\0';
+	return str;
 }
