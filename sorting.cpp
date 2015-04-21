@@ -58,6 +58,29 @@ void ShellSort(ElemType A[], int n)
 		}
 	}
 }
+//交换，冒泡排序，最坏情况和平均时间复杂度为O(n^2)，空间复杂度O(1)，稳定
+void BubbleSort(ElemType A[], int n)
+{
+	int i, j, flag, temp;
+	//小元素上浮，第0、1、2、3。。。依次排好序
+	for (i = 0; i < n-1; i ++)
+	{
+		flag = 0; //表示本趟冒泡是否发生交换的标志
+		//从底部开始相邻比较，较小的元素交换上浮
+		for (j = n-1; j > i; j --)
+		{
+			if (A[j] < A[j-1])
+			{
+				temp = A[j];
+				A[j] = A[j-1];
+				A[j-1] = temp;
+				flag = 1;
+			}
+		}
+		if (!flag)
+			break;
+	}
+}
 int main(int argc, char const *argv[])
 {
 	ElemType A[] = {1, 4, 6, 2, 6, 7, 2, 3, 9, 1, 10};
@@ -65,7 +88,8 @@ int main(int argc, char const *argv[])
 	std::cout << sizeof(A)/sizeof(ElemType) << std::endl;
 	int n = sizeof(A)/sizeof(ElemType);
 	//InsertSort(A, n);
-	ShellSort(A, n);
+	//ShellSort(A, n);
+	BubbleSort(A, n);
 	PrintArray(A, n);
 	return 0;
 }
