@@ -81,6 +81,85 @@ void BubbleSort(ElemType A[], int n)
 			break;
 	}
 }
+
+int LHPartition(ElemType A[], int low, int high)
+{
+	ElemType pivot = A[low];
+	while(low < high)
+	{
+		while(low < high && A[high] >= pivot) --high;
+		A[low] = A[high];
+		while(low < high && A[low] <= pivot) ++low;
+		A[high] = A[low];
+	}
+	A[low] = pivot;
+	return low;
+}
+//半区保序的Partition，指针从哪边开始，哪个半区就是保序的
+int LLPartition(ElemType A[], int low, int high)
+{
+	//选择基准元，以最右边一个为基准
+	ElemType pivot = A[high];
+	ElemType temp;
+	//i指针为左区指针，依次存放不大于temp的元素
+	int i = low - 1;
+	//j指针从左向右依次扫描，发现不大于temp的元素
+	for (int j = low; j < high; j ++)
+	{
+		if (A[j] <= pivot)
+		{
+			++ i;
+			temp = A[i];
+			//把满足条件的j放到左区i位置
+			A[i] = A[j];
+			A[j] = temp;
+		}
+	}
+	//最后把枢纽元交换到中间
+	temp = A[i+1];
+	A[i+1] = A[high];
+	A[high] = A[i+1];
+	//返回枢纽元位置
+	return i+1;
+}
+void QuickSort(ElemType A[], int low, int high)
+{
+	if (low < high)
+	{
+		int pivotpos = LHPartition(A, low, high);
+		QuickSort(A, low, pivotpos - 1);
+		QuickSort(A, pivotpos+1, high);
+	}
+}
+
+bool isUpper(char a)
+{
+	if (a >= 'A' && a <= 'Z')
+	{
+		return true;
+	}
+	return false;
+}
+bool isLower(char a)
+{
+	if (a >= 'a' && a <= 'z')
+	{
+		return true;
+	}
+	return false;
+}
+//利用快速排序的一趟，将小写字母放在左边，大写字母放在右边
+void CharPartition(char A[], int low, int high)
+{
+	while (low < high)
+	{
+		while(low < high && isUpper(A[high])) --high;
+		while(low < high && isLower(A[low])) ++low;
+		char temp = A[high];
+		A[high] = A[low];
+		A[low] = A[high];
+	}
+}
 int main(int argc, char const *argv[])
 {
 	ElemType A[] = {1, 4, 6, 2, 6, 7, 2, 3, 9, 1, 10};
@@ -89,7 +168,11 @@ int main(int argc, char const *argv[])
 	int n = sizeof(A)/sizeof(ElemType);
 	//InsertSort(A, n);
 	//ShellSort(A, n);
-	BubbleSort(A, n);
+	//BubbleSort(A, n);
+	QuickSort(A, 0, n-1);
 	PrintArray(A, n);
+	char a[7] = {'a', 'A', 'Z', 'd', 'B', 's', 'b'};
+	CharPartition(a, 0, 6);
+	
 	return 0;
 }
