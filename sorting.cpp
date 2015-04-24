@@ -197,6 +197,37 @@ void ThreePartition(int A[], int low, int high)
 	}
 }
 
+//利用快速排序Partition函数找出数组中的topK，但不能保证topK是有序的
+void getTopK(int input[], int n, int output[], int k)
+{
+	if (input == NULL || output == NULL || k > n || n <= 0 || k <= 0)
+	{
+		return;
+	}
+	int start = 0;
+	int end = n-1;
+	//一次划分函数
+	//LHPartition为快速排序默认划分函数，以首元作为枢纽元，low和high两个指针从两边向中间扫描
+	int index = LHPartition(input, start, end);
+	//index = k-1说明[0...k-1]这k个数字是topK，但不能保证它们是有序的。
+	while (index != k-1)
+	{
+		if (index >= k-1)
+		{
+			end = index - 1;
+			index = LHPartition(input, start, end);
+		}
+		else
+		{
+			start = index + 1;
+			index = LHPartition(input, start, end);
+		}
+	}
+	for (int i = 0; i < k; i ++)
+	{
+		output[i] = input[i];
+	}
+}
 int main(int argc, char const *argv[])
 {
 	ElemType A[] = {1, 4, 6, 2, 6, 7, 2, 3, 9, 1, 10};
@@ -213,6 +244,6 @@ int main(int argc, char const *argv[])
 	int three[] = {0, 1, 2, 1, 1, 2, 0, 2, 1, 0};
 	ThreePartition(three, 0, 9);
 	PrintArray(three, 10);
-	
+
 	return 0;
 }
