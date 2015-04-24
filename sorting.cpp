@@ -228,6 +228,23 @@ void getTopK(int input[], int n, int output[], int k)
 		output[i] = input[i];
 	}
 }
+//选择排序
+void SelectionSort(ElemType A[], int n)
+{
+	int min;
+	for (int i = 0; i < n; i ++)
+	{
+		min = i;
+		for (int j = i+1; j < n; j ++)
+		{
+			if (A[j] < A[min])
+				min = j;
+		}
+		if (min != i)
+			swap(A, i, min);
+	}
+}
+
 int main(int argc, char const *argv[])
 {
 	ElemType A[] = {1, 4, 6, 2, 6, 7, 2, 3, 9, 1, 10};
@@ -237,7 +254,8 @@ int main(int argc, char const *argv[])
 	//InsertSort(A, n);
 	//ShellSort(A, n);
 	//BubbleSort(A, n);
-	QuickSort(A, 0, n-1);
+	//QuickSort(A, 0, n-1);
+	SelectionSort(A, n);
 	PrintArray(A, n);
 	char a[7] = {'a', 'A', 'Z', 'd', 'B', 's', 'b'};
 	CharPartition(a, 0, 6);
