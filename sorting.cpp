@@ -2,6 +2,12 @@
 
 typedef int ElemType;
 
+void swap(ElemType A[], int i, int j)
+{
+	ElemType temp = A[i];
+	A[i] = A[j];
+	A[j] = temp;
+}
 
 //传递数组给函数时，实际是传递了一个指针，函数里的sizeof只能求出指针的大小，不能求数组的大小
 void PrintArray(ElemType A[], int n)
@@ -160,6 +166,37 @@ void CharPartition(char A[], int low, int high)
 		A[low] = A[high];
 	}
 }
+//一个集合中有三种元素，按元素聚集排序，假设为一个数组中有三种数字0、1、2，将0排在左区，1排在中区，2排在右区
+void ThreePartition(int A[], int low, int high)
+{
+	int current, begin, end;
+	current = low;
+	begin = low;
+	end = high;
+	while (current <= end)
+	{
+		if (A[current] == 0)
+		{
+			//把0交换到左区begin指针位置
+			swap(A, current, begin);
+			current ++;
+			//begin指针往右走，保证它的左边都是0
+			begin ++;
+		}
+		else if (A[current] == 1)
+		{
+			current ++;
+		}
+		else
+		{
+			//把2交换到右区end指针
+			swap(A, current, end);
+			//end指针往左走，保证它的右边都是2
+			end --;
+		}
+	}
+}
+
 int main(int argc, char const *argv[])
 {
 	ElemType A[] = {1, 4, 6, 2, 6, 7, 2, 3, 9, 1, 10};
@@ -173,6 +210,9 @@ int main(int argc, char const *argv[])
 	PrintArray(A, n);
 	char a[7] = {'a', 'A', 'Z', 'd', 'B', 's', 'b'};
 	CharPartition(a, 0, 6);
+	int three[] = {0, 1, 2, 1, 1, 2, 0, 2, 1, 0};
+	ThreePartition(three, 0, 9);
+	PrintArray(three, 10);
 	
 	return 0;
 }
