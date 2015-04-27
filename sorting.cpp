@@ -87,7 +87,7 @@ void BubbleSort(ElemType A[], int n)
 			break;
 	}
 }
-
+//前后两个指针向中间扫描，不稳定
 int LHPartition(ElemType A[], int low, int high)
 {
 	ElemType pivot = A[low];
@@ -228,7 +228,7 @@ void getTopK(int input[], int n, int output[], int k)
 		output[i] = input[i];
 	}
 }
-//选择排序
+//选择，简单选择排序，时间复杂度始终是O(n^2)，空间复杂度O(1)，不稳定（交换时被前面换到后面）
 void SelectionSort(ElemType A[], int n)
 {
 	int min;
@@ -237,11 +237,54 @@ void SelectionSort(ElemType A[], int n)
 		min = i;
 		for (int j = i+1; j < n; j ++)
 		{
+			//元素移动很少次，每轮循环只记录下标，每轮swap移动3次，总共最多移动3(n-1)次
+			//比较次数始终是n(n-1)/2
 			if (A[j] < A[min])
 				min = j;
 		}
 		if (min != i)
 			swap(A, i, min);
+	}
+}
+
+void AdjustDown(ElemType A[], int k, int len)
+{
+	//A[0]位置缓存当前子树的根节点
+	A[0] = A[k];
+	//对其子节点以下进行调整
+	for (int i = 2*k; i <= len; i *= 2)
+	{
+		//i<len 如果有两个子节点，则从中选择较大的一个
+		if (i < len && A[i] < A[i+1])
+			i ++;
+		//子树根节点本身就满足，不需要调整
+		if (A[0] >= A[i])
+			break;
+		//否则进行调整，子树根节点换成较大的子节点，然后k=i对子节点进行调整
+		else
+		{
+			A[k] = A[i];
+			k = i;
+		}
+	} //for
+	A[k] = A[0];
+}
+//选择，堆排序，最好最坏平均情况下时间复杂度为O(nlogn)，空间复杂度为O(1)，建堆的时间复杂度为O(n)
+void buildMaxHeap(ElemType A[], int len)
+{
+	for (int i = len/2; i > 0; i --)
+		AdjustDown(A, i, len);
+}
+void HeapSort(ElemType A[], int n)
+{
+	buildMaxHeap(A, n);
+	// >1表示最后剩一个根节点未排序时，它正好就是在哪个位置，无需交换
+	for (int i = n; i > 1; --i)
+	{
+		//把大顶堆的根节点交换到最后，后面都是排好序的
+		swap(A, i, 1);
+		//由于交换，根节点破坏了大顶堆条件，则从根节点开始向下调整
+		AdjustDown(A, 1, i-1);
 	}
 }
 
@@ -255,7 +298,8 @@ int main(int argc, char const *argv[])
 	//ShellSort(A, n);
 	//BubbleSort(A, n);
 	//QuickSort(A, 0, n-1);
-	SelectionSort(A, n);
+	//SelectionSort(A, n);
+	HeapSort(A, n);
 	PrintArray(A, n);
 	char a[7] = {'a', 'A', 'Z', 'd', 'B', 's', 'b'};
 	CharPartition(a, 0, 6);
