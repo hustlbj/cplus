@@ -1,5 +1,6 @@
 #include <iostream>
 
+#define N 20
 typedef int ElemType;
 
 void swap(ElemType A[], int i, int j)
@@ -288,6 +289,39 @@ void HeapSort(ElemType A[], int n)
 	}
 }
 
+ElemType B[N]; 
+//A是原始数组，全局变量B是辅助缓存数组，对low~mid, mid+1~high进行合并
+void Merge(ElemType A[], int low, int mid, int high)
+{
+	int i, j, k;
+	//先把A中原来的数值缓存在B中，排好序的再放到A中
+	for (k = low; k <= high; k ++)
+		B[k] = A[k];
+	//i j分别是low~mid和mid+1~high的半区指针，k是A中存放排好序的指针
+	for (i = low, j = mid + 1, k = i; i <= mid && j <= high; k ++)
+	{
+		//左半区的元素小的话就先复制到A中
+		if (B[i] < B[j])
+			A[k] = B[i++];
+		else
+			A[k] = B[j++];
+	}
+	//最后如果由个半区剩下了元素，则把剩下的复制到A中
+	while (i <= mid) A[k++] = B[j++];
+	while (j <= high) A[k++] = B[j++];
+}
+//归并排序，每一趟归并的时间复杂度为O(n)，共需进行log n趟归并，所以算法的时间复杂度为O(n log n)，空间复杂度为O(n)，稳定
+void MergeSort(ElemType A[], int low, int high)
+{
+	//至少2个元素，如果递归到只有1个元素则不会执行下一层MergeSort，返回到上一层执行Merge
+	if (low < high)
+	{
+		int mid = (low + high) / 2;
+		MergeSort(A, low, mid);
+		MergeSort(A, mid+1, high);
+		Merge(A, low, mid, high);
+	}
+}
 int main(int argc, char const *argv[])
 {
 	ElemType A[] = {1, 4, 6, 2, 6, 7, 2, 3, 9, 1, 10};
@@ -299,7 +333,8 @@ int main(int argc, char const *argv[])
 	//BubbleSort(A, n);
 	//QuickSort(A, 0, n-1);
 	//SelectionSort(A, n);
-	HeapSort(A, n);
+	//HeapSort(A, n);
+	MergeSort(A, 0, n-1);
 	PrintArray(A, n);
 	char a[7] = {'a', 'A', 'Z', 'd', 'B', 's', 'b'};
 	CharPartition(a, 0, 6);
