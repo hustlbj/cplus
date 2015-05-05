@@ -322,6 +322,114 @@ void MergeSort(ElemType A[], int low, int high)
 		Merge(A, low, mid, high);
 	}
 }
+
+struct ListNode {
+	int value;
+	ListNode* pNext;
+};
+//利用二路归并排序中的merge思想，递归合并两个已经排好序的子链表
+ListNode* mergeList(ListNode* list1, ListNode* list2)
+{
+	if (list1 == NULL)
+		return list2;
+	else if (list2 ==  NULL)
+		return list1;
+	ListNode* pHead = NULL;
+	if (list1->value < list2->value)
+	{
+		pHead = list1;
+		pHead->pNext = mergeList(list1->pNext, list2);
+	}
+	else
+	{
+		pHead = list2;
+		pHead->pNext = mergeList(list1, list2->pNext);
+	}
+	return pHead;
+}
+
+//a、b两个有序数组，a足够大，将b合并到a中。思想，从后端开始合并放入a的后端
+void mergeTwoArray(int a[], int b[], int n, int m)
+{
+	int k = n + m - 1; //a全序索引
+	int i = n - 1; //原来a中元素的索引
+	int j = m - 1; //b中元素的索引
+	while (i >= 0 && j >= 0)
+	{
+		if (a[i] > b[j])
+		{
+			a[k--] = a[i--];
+		}
+		else
+		{
+			a[k--] = b[j--];
+		}
+	}
+	while (j >= 0)
+	{
+		a[k--] = b[j--];
+	}
+}
+
+//原地归并相关函数
+//将长度为n的数组逆序
+void reverse(ElemType *arr, int n)
+{
+	int i = 0, j = n - 1;
+	while (i < j)
+	{
+		swap(arr, i, j);
+		i ++; 
+		j --;
+	}
+}
+//将含有n个元素的数组向左循环移动i个位置
+//相当于把arr指向区域的前i个元素和后n-i个元素整体位置交换
+// |  i   |      n-i     |
+// |      n-i     |  i   |
+void exchange(ElemType *arr, int n, int i)
+{
+	reverse(arr, i);
+	reverse(arr+i, n-i);
+	reverse(arr, n);
+}
+// | <arr[j] , , , | >arr[j], , , , | <arr[i], , , | >arr[i], , , |
+// | begin   , , , | i      , , , , | mid    , , , | j      , , , |
+// |原左区中较小的 | 原左区中较大的 |原右区中较小的|原右区中较大的|
+// | 位置保持      | 和右区较小交换 |和左区较大交换| 位置暂时保持 |
+void inSituMerge(ElemType *arr, int begin, int mid, int end)
+{
+	int i = begin, j = mid, k = end;
+	//循环条件是半区指针不越界
+	while (i < j && j <= k)
+	{
+		int step = 0;
+		//在左区寻找arr[i] > arr[j]的一个元素
+		while (i < j && arr[i] <= arr[j])
+			++i;
+		//在右区寻找arr[j] > arr[i]的一个元素
+		while (j <= k && arr[j] <= arr[i])
+		{
+			++j;
+			++step;
+		}
+		//把这个区域中的元素做exchange，原地merge的核心
+		exchange(arr+i, j-i, j-i-step);
+		//再把后面没合并好的继续这个操作
+		i = i + step;
+	}
+}
+void InSituMergeSort(ElemType *arr, int low, int high)
+{
+	if (low < high)
+	{
+		//n=11, 0~10, mid=5, |0, 1, 2, 3, 4, 5,| 6, 7, 8, 9, 10|
+		int mid = (low + high) / 2;
+		InSituMergeSort(arr, low, mid);
+		InSituMergeSort(arr, mid+1, high);
+		inSituMerge(arr, low, mid+1, high);
+	}
+}
 int main(int argc, char const *argv[])
 {
 	ElemType A[] = {1, 4, 6, 2, 6, 7, 2, 3, 9, 1, 10};
@@ -334,7 +442,8 @@ int main(int argc, char const *argv[])
 	//QuickSort(A, 0, n-1);
 	//SelectionSort(A, n);
 	//HeapSort(A, n);
-	MergeSort(A, 0, n-1);
+	//MergeSort(A, 0, n-1);
+	InSituMergeSort(A, 0, n-1);
 	PrintArray(A, n);
 	char a[7] = {'a', 'A', 'Z', 'd', 'B', 's', 'b'};
 	CharPartition(a, 0, 6);
