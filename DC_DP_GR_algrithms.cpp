@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <time.h>
 #include <iostream>
+#include <cstring> //兼容的C风格头文件
 //分治法：分解，解决，合并。快速排序、归并排序都采用了分治法
 /* 分治法所能解决的问题一般具有以下几个特征：
 1、 该问题的规模缩小到一定的成都就可以容易地解决
@@ -78,6 +79,49 @@ int DP_Fib(int m)
 4、 由计算出的结果构造一个最优解
 最优子结构：如果问题的最优解所包含的子问题的解也是最优的，则该问题具有最优子结构
 */
+//动态规划解决最长公共子序列问题LCS
+/* 
+序列X=<X0,X1,X2,...,Xm>和序列Y=<Y1,Y2,..Yn>的一个最长公共子序列为Z=<Z0,Z1,Z2,...,Zk>
+1）若Xm=Yn，则必然有Zk=Xm=Yn，且Zk-1是Xm-1和Yn-1的最长公共子序列
+2）若两个序列的末尾不想等Xm!=Yn且Zk!=Xm，公共子序列的末尾不是X的末尾，则Z是Xm-1和Y的最长公共子序列
+3）同理，若Xm!=Yn且Zk!=Yn，则Z是X和Yn-1的最长公共子序列
+递归定义最优解的值：
+当Xm=Yn时，则LCS(Xm,Yn)=LCS(Xm-1,Yn-1)+1;
+当Xm!=Yn时，则LCS(Xm,Yn)=max{LCS(Xm-1,Yn), LCS(Xm,Yn-1)}
+画出表格记录自底向上的值，若用C[i,j]表示m行n列表格中的元素，则
+C[i,j] = 0							if i = 0 or j = 0
+		 C[i-1,j-1]+1   			if i,j>0 and Xi==Yj
+		 max(C[i,j-1], C[i-1,j])	if i,j>0 and Xi!=Yj
+*/
+int C[100][100];
+int max(int a, int b)
+{
+	return a >= b ? a : b;
+}
+//自底向上求解，另外还有递归的自顶向下
+int LCS_LENGTH(const char* X, const char* Y)
+{
+	if (X == NULL || Y == NULL)
+	{
+		return 0;
+	}
+	int m = strlen(X);
+	int n = strlen(Y);
+	C[0][0] = 0;
+	for (int i = 1; i < m; i ++)
+		C[i][0] = 0;
+	for (int i = 1; i < n; i ++)
+		C[0][i] = 0;
+	for (int i = 1; i <= m; i ++)
+		for (int j = 1; j <= n; j ++)
+		{
+			if (X[i] == Y[j])
+				C[i][j] = C[i-1][j-1] + 1;
+			else
+				C[i][j] = max(C[i][j-1], C[i-1][j]);
+		}
+	return C[m][n];
+}	
 
 int main()
 {
@@ -97,6 +141,10 @@ int main()
 	fib = DP_Fib(40);
 	end = clock();
 	std::cout << fib << ": " << end-start << std::endl;
+
+	char* X = "abcdabcdabcd";
+	char* Y = "aaadbcdbcada";
+	std::cout << "LCS: " << LCS_LENGTH(X, Y) << std::endl;
 
 	return 0;
 }
