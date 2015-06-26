@@ -143,9 +143,27 @@ typedef struct Node {
 	int element;
 	ListNode* next;
 } ListNode;
+//返回链表中的倒数第k个节点，距离最后一个节点k-1步，所以用2个指针构造一个k-1步的差值即可
+/*
+p1先走k-1，然后再走x，再走k-1步正好走到尾部
+当p1在k-1时，p2在0处开始走，也是走(k-1) + x步，正好到达倒数第k个节点
+p1	1 	2 	k-1     -   x   -  	k  --  3 -- n-1
+0 	1 	2 	3   	5 	6 	7 	8 	9 	10 	11 
+p2  -- 3 -- |       -   x   -   |
+ 
+ 异常返回为NULL
+*/
 ListNode* FindKthToTail(ListNode* pListHead, unsighed int k)
 {
-
+	if (pListHead == NULL)
+		return NULL;
+	ListNode* pAhead = pListHead;
+	ListNode* pBehind = pListHead;
+	unsigned int i = 0;
+	for ( ; pAhead->next != NULL, i < k-1; i ++)
+	{
+		
+	}
 }
 void main(int argc, char* argv[])
 {
