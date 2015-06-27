@@ -76,6 +76,7 @@ int copyFile(int argc, char* argv[])
   一个无符号类型可以容纳的数字范围为0到(+ 2^位数 )。
   例如，一个16位有符号整数可以容纳的数字范围为-2^15(即-32768)到(+2^15-1)(即+32767)。
   而16为无符号整数可容纳的最大值为(2^位数-1)或表示为汇编形式0xffff。
+  INT_MAX+1溢出之后就变成INT_MIN了，INT_MIN+1溢出之后就变成INT_MAX了。
 */
 /*
   范围：带符号整型，可返回正数和负数
@@ -155,15 +156,27 @@ p2  -- 3 -- |       -   x   -   |
 */
 ListNode* FindKthToTail(ListNode* pListHead, unsighed int k)
 {
-	if (pListHead == NULL)
+	//保证链表不为空，并且倒数数字大于0
+	if (pListHead == NULL || k < 1)
 		return NULL;
 	ListNode* pAhead = pListHead;
 	ListNode* pBehind = pListHead;
 	unsigned int i = 0;
-	for ( ; pAhead->next != NULL, i < k-1; i ++)
+	// 0，1，……，k-2，移动k-1步
+	for ( ; i < k-1; i ++)
 	{
-		
+		// 在k-1步以前已经到最后一个节点，说明链表本身不够k个66666
+		if (pAhead->next == NULL)
+			return NULL;
+		pAhead = pAhead->next;
 	}
+	//让pAhead走到最后一个节点
+	while (pAhead->next != NULL)
+	{
+		pAhead = pAhead->next;
+		pBehind = pBehind->next;
+	}
+	return pBehind;
 }
 void main(int argc, char* argv[])
 {
