@@ -142,7 +142,7 @@ int strToInt(char* string)
 
 typedef struct Node {
 	int element;
-	ListNode* next;
+	struct Node* next;
 } ListNode;
 //返回链表中的倒数第k个节点，距离最后一个节点k-1步，所以用2个指针构造一个k-1步的差值即可
 /*
@@ -154,7 +154,7 @@ p2  -- 3 -- |       -   x   -   |
  
  异常返回为NULL
 */
-ListNode* FindKthToTail(ListNode* pListHead, unsighed int k)
+ListNode* FindKthToTail(ListNode* pListHead, unsigned int k)
 {
 	//保证链表不为空，并且倒数数字大于0
 	if (pListHead == NULL || k < 1)
