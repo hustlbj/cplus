@@ -271,6 +271,44 @@ Singleton1* Singleton1::Instance()
  	return found;
  }
 
+ /*
+ T4. 将一个字符串中的空格替换成%20
+ O(n)方法：假定存储原串的空间足够大，在原串基础上修改。先遍历一次字符串，遇到一个空格，新字符串的长度就需要额外+2，这样计算出新串的总长度
+ 用两个指针或下标P1和P2，从尾部开始，P1指向新串尾部，P2指向原串尾部，P2指向的字符不是空格就复制到P1--；P2指向的字符是空格，P1--依次赋值'0' '2' '%'，然后P2--
+ @param string 原字符串
+ @param length 存储原字符串的空间的长度，确保可以容纳新字符串
+ */
+ void ReplaceBlank(char string[], int length)
+ {
+ 	if (string == NULL || length <= 0)
+ 		return;
+ 	int i = 0;
+ 	int blankLength = 0, oldLength = 0, newLength = 0;
+ 	while (string[i ++] != '\0')
+ 	{
+ 		oldLength ++;
+ 		if (string[i] == ' ')
+ 			blankLength ++;
+ 	}
+ 	newLength = oldLength + 2 * blankLength;
+ 	if (newLength + 1 > length)
+ 		return;
+ 	string[newLength] = '\0';
+ 	int p1 = newLength - 1, p2 = oldLength - 1;
+ 	while (p2 >= 0)
+ 	{
+ 		if (string[p2] != ' ')
+ 			string[p1 --] = string[p2];
+ 		else
+ 		{
+ 			string[p1 --] = '0';
+ 			string[p1 --] = '2';
+ 			string[p1 --] = '%';
+ 		}
+ 		p2 --;
+ 	}
+ }
+
 int main(int argc, char const *argv[])
 {
 	//sumFromInput();
@@ -283,7 +321,8 @@ int main(int argc, char const *argv[])
 	A b = a;
 	b.Print();
 
-	char* str = "hehe";
+	//C风格字符串，将字符串常量最好赋给字符数组而不是字符指针。
+	char str[] = "hehe";
 	CMyString c(str);
 	c.Print();
 	//默认执行构造函数
@@ -306,6 +345,12 @@ int main(int argc, char const *argv[])
 		std::cout << "Found 7" << std::endl;
 	else
 		std::cout << "Not found 7" << std::endl;
+
+	//替换掉原串中的空格为%20
+	char string[100] = "I am not a hacker!";
+	std::cout << "Original string: " << string << std::endl;
+	ReplaceBlank(string, 100);
+	std::cout << "ReplaceBlank: " << string << std::endl;
 
 	return 0;
 }
