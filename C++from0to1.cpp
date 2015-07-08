@@ -129,6 +129,23 @@ public:
 	void Print() { std::cout << value << std::endl; }
 };
 
+int GetSize(int data[])
+{
+	return sizeof(data);
+}
+void TestSizeof()
+{
+	//数组
+	int data1[] = {1, 2, 3, 4, 5};
+	int size1 = sizeof(data1);
+
+	int *data2 = data1;
+	int size2 = sizeof(data2);
+
+	int size3 = GetSize(data1);
+
+	std::cout << size1 << ", " << size2 << ", " << size3 << std::endl;
+}
 
 /*
  T1. 重载赋值运算符operator =
@@ -214,6 +231,45 @@ Singleton1* Singleton1::Instance()
 	return _instance;
 }
 
+/*
+ T3. 二维数组中查找一个数字
+ 二维数组每行、梅列都递增排序，如
+ 1 	2 	8 	9
+ 2 	4 	9 	12
+ 4 	7 	10  13
+ 6 	8 	11 	15
+*/
+ bool Find(int* matrix, int rows, int columns, int number)
+ {
+ 	bool found = false;
+ 	if (matrix != NULL && rows > 0 && columns > 0)
+ 	{
+ 		//从矩阵右上角开始
+ 		int row = 0;
+ 		int column = column - 1;
+ 		//列从右到左，行从上到下切除
+ 		while (row < rows && column >= 0)
+ 		{
+ 			std::cout << "check matrix[row*columns + column] " << matrix[row * columns + column] << std::endl;
+ 			if (matrix[row * columns + column] == number)
+ 			{
+ 				found = true;
+ 				break;
+ 			}
+ 			//当前未检查区域右上角数字大于目标值，则切除这一列
+ 			else if (matrix[row * columns + column] > number)
+ 			{
+ 				-- column;
+ 			}
+ 			//当前未检查区域右上角数字小于目标值，说明所在行都小于目标值，切除这一行
+ 			else
+ 			{
+ 				++ row;
+ 			}
+ 		}
+ 	}
+ 	return found;
+ }
 
 int main(int argc, char const *argv[])
 {
@@ -239,7 +295,17 @@ int main(int argc, char const *argv[])
 	//单例
 	Singleton1* s1 = Singleton1::Instance();
 	Singleton1* s2 = Singleton1::Instance();
-	std::cout << "Singleton1: " << (s1 == s2) << std::endl;
+	std::cout << "Singleton1: s1==s2? " << (s1 == s2) << std::endl;
+
+	//sizeof(数组名)结果是数组大小=元素个数*每个元素所占字节数
+	//sizeof(指针)结果是指针变量所占字节数，数组名传入到函数中自动转换成指针类型
+	TestSizeof();
+
+	int matrix[] = {1, 2, 8, 9, 2, 4, 9, 12, 4, 7, 10, 13, 6, 8, 11, 15};
+	if (Find(matrix, 4, 4, 7))
+		std::cout << "Found 7" << std::endl;
+	else
+		std::cout << "Not found 7" << std::endl;
 
 	return 0;
 }
