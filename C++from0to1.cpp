@@ -6,6 +6,8 @@
 #include <sstream>
 #include <fstream>
 #include <cstring>
+#include "list.h"
+#include <stack>
 //#include <mutex>  c++11
 using namespace std;
 
@@ -309,6 +311,42 @@ Singleton1* Singleton1::Instance()
  	}
  }
 
+ /*
+ T5. 从尾到头打印链表中的节点值
+ 两种方案，一种是用递归，一种是用栈来缓存前序节点
+ */
+ void PrintListReversingly_Recursively(ListNode* pHead)
+{
+	//当前节点不为NULL
+	if (pHead != NULL)
+	{
+		//如果当前节点有子节点的话，就递归
+		if (pHead->m_pNext != NULL)
+		{
+			PrintListReversingly_Recursively(pHead->m_pNext);
+		}
+		//否则输出
+		printf("%d\t", pHead->m_nValue);
+	}
+}
+
+void PrintListReversingly_Iteratively(ListNode* pHead)
+{
+	std::stack<ListNode*> nodes;
+	ListNode* pNode = pHead;
+	while (pNode != NULL)
+	{
+		nodes.push(pNode);
+		pNode = pNode->m_pNext;
+	}
+	while (!nodes.empty())
+	{
+		pNode = nodes.top();
+		printf("%d\t", pNode->m_nValue);
+		nodes.pop();
+	}
+}
+
 int main(int argc, char const *argv[])
 {
 	//sumFromInput();
@@ -351,6 +389,19 @@ int main(int argc, char const *argv[])
 	std::cout << "Original string: " << string << std::endl;
 	ReplaceBlank(string, 100);
 	std::cout << "ReplaceBlank: " << string << std::endl;
+
+	//链表测试
+	List myList;
+	/*
+	ListNode* aNode = new ListNode();
+	aNode->m_nValue = 0;
+	aNode->m_pNext = NULL;
+	myList.m_pList = aNode;*/
+	for (int i = 0; i < 10; i ++)
+	{
+		myList.AddToTail(&myList.m_pList, i);
+	}
+	PrintListReversingly_Recursively(myList.m_pList);
 
 	return 0;
 }
