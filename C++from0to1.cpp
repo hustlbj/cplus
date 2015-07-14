@@ -7,7 +7,10 @@
 #include <fstream>
 #include <cstring>
 #include "list.h"
+#include "tree.h"
 #include <stack>
+#include <exception>
+#include <stdexcept>
 //#include <mutex>  c++11
 using namespace std;
 
@@ -329,7 +332,6 @@ Singleton1* Singleton1::Instance()
 		printf("%d\t", pHead->m_nValue);
 	}
 }
-
 void PrintListReversingly_Iteratively(ListNode* pHead)
 {
 	std::stack<ListNode*> nodes;
@@ -346,6 +348,75 @@ void PrintListReversingly_Iteratively(ListNode* pHead)
 		nodes.pop();
 	}
 }
+
+/*
+ T6. 根据二叉树的前序遍历和中序遍历，重建该二叉树。
+ 参数：preorder为前序遍历数组，inorder为中序遍历数组，length为数组长度
+          root |   left    |    right    |
+ preorder-> 1 	2 	4 	7 	3 	5 	6 	8
+ inorder -> 4 	7 	2 	1 	5 	3	8 	6
+           |   left  | root|    right    |   
+ preorder指向的第一个节点是root，然后再inorder序列中寻找root的位置，左边的就是left右边的就是right。
+ 然后递归地对left和right再进行这样的识别root
+*/
+ BinaryTreeNode* ConstructCore(int* startPreorder, int* endPreorder, int* startInorder, int* endInorder);
+ BinaryTreeNode* Construct(int* preorder, int* inorder, int length)
+ {
+ 	if (preorder == NULL || inorder == NULL || length <= 0)
+ 		return NULL;
+ 	printf("sub-tree root order: ");
+ 	return ConstructCore(preorder, preorder + length - 1, inorder, inorder + length - 1);	
+ }
+ BinaryTreeNode* ConstructCore(int* startPreorder, int* endPreorder, int* startInorder, int* endInorder)
+ {
+ 	//前序遍历的第一个数字是根结点的值
+ 	int rootValue = startPreorder[0];
+ 	BinaryTreeNode* root = new BinaryTreeNode();
+ 	root->m_nValue = rootValue;
+ 	root->m_pLeft = root->m_pRight = NULL;
+ 	printf("%d\t", root->m_nValue);
+
+ 	if(startPreorder == endPreorder)
+ 	{
+ 		//到达叶子节点，不必再向下
+ 		if (startInorder == endInorder && *startPreorder == *startInorder)
+ 			return root;
+ 		else
+ 		{
+ 			std::runtime_error err("Invalid input.");
+ 			throw err;
+ 		}
+ 	}
+
+ 	//在中序遍历中找到根节点的位置，从而将左右子树分开
+ 	int* rootInorder = startInorder;
+ 	while (rootInorder <= endInorder && *rootInorder != rootValue)
+ 		++ rootInorder;
+ 	//前序和中序遍历冲突，输入错误
+ 	if (rootInorder == endInorder && *rootInorder != rootValue)
+ 	{
+ 		std::runtime_error err("Invalid input.");
+ 		throw err;
+ 	}
+ 	/*
+ 	             start                         end
+		 inorder -> 4 	7 	2 	1 	5 	3	8 	6
+          	       |   left  | root|    right    |
+ 	*/
+ 	int leftLength = rootInorder - startInorder;
+ 	int* leftPreorderEnd = startPreorder + leftLength;
+ 	if (leftLength > 0)
+ 	{
+ 		//构建左子树，把左子树先序遍历传入
+ 		root->m_pLeft = ConstructCore(startPreorder + 1, leftPreorderEnd, startInorder, rootInorder - 1);
+ 	}
+ 	if (leftLength < endPreorder - startPreorder)
+ 	{
+ 		//构建右子树，把右子树先序遍历传入
+ 		root->m_pRight = ConstructCore(leftPreorderEnd + 1, endPreorder, rootInorder + 1, endInorder);
+ 	}	
+ 	return root;
+ }
 
 int main(int argc, char const *argv[])
 {
@@ -402,6 +473,12 @@ int main(int argc, char const *argv[])
 		myList.AddToTail(&myList.m_pList, i);
 	}
 	PrintListReversingly_Recursively(myList.m_pList);
+
+	//二叉树测试
+	int preorder[] = {1, 2, 4, 7, 3, 5, 6, 8};
+	int inorder[] = {4, 7, 2, 1, 5, 3, 8, 6};
+	BinaryTreeNode* binaryTree = NULL;
+	binaryTree = Construct(preorder, inorder, 8);
 
 	return 0;
 }

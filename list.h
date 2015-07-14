@@ -22,5 +22,7 @@ public:
 	void AddToTail(ListNode** pHead, ElementType value);
 	void RemoveNode(ListNode** pHead, ElementType value);
 	ListNode* m_pList; 
+private:
+	
 };
 #endif  
