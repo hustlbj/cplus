@@ -8,6 +8,8 @@
 #include <cstring>
 #include "list.h"
 #include "tree.h"
+#include "queue_2s.h"
+#include "stack_2q.h"
 #include <stack>
 #include <exception>
 #include <stdexcept>
@@ -418,6 +420,46 @@ void PrintListReversingly_Iteratively(ListNode* pHead)
  	return root;
  }
 
+ /*
+ T7. 用两个栈实现队列，appendTail和deleteHead，分别完成在队列尾部插入节点和在对垒头部删除节点的功能
+ 见queue.h 和 queue.cpp
+ 插入数据：一直往stack1中压入数据即可
+ 删除数据：如果stack2为空，就从stack1中依次弹出所有的数据并压入到stack2，stack2中便是删除节点的顺序
+ */
+ void queueUsingStacks()
+ {
+ 	// 模板类的实现必须要放在.h头文件中，不能单独放在cpp文件中
+ 	CQueue<int> queue;
+ 	for (int i = 0; i < 10; ++i)
+ 	{
+ 		int element = i;
+ 		queue.appendTail(element);
+ 	}
+ 	std::cout << "Queue: ";
+ 	while (queue.size() > 0)
+ 	{
+ 		std::cout << queue.deleteHead() << ", ";
+ 	}
+ 	std::cout << std::endl;
+ }
+ /*
+ 用两个队列实现栈
+ */
+ void stackUsingQueues()
+ {
+ 	CStack<int> stack;
+ 	for (int i = 0; i < 10; i ++)
+ 	{
+ 		stack.pushToTop(i);
+ 	}
+ 	std::cout << "Stack: ";
+ 	while (stack.size() > 0)
+ 	{
+ 		std::cout << stack.popFromTop() << ", ";
+ 	}
+ 	std::cout << std::endl;
+ }
+
 int main(int argc, char const *argv[])
 {
 	//sumFromInput();
@@ -479,6 +521,12 @@ int main(int argc, char const *argv[])
 	int inorder[] = {4, 7, 2, 1, 5, 3, 8, 6};
 	BinaryTreeNode* binaryTree = NULL;
 	binaryTree = Construct(preorder, inorder, 8);
+
+	//队列测试
+	std::cout << std::endl;
+	queueUsingStacks();
+	//栈测试
+	stackUsingQueues();
 
 	return 0;
 }
