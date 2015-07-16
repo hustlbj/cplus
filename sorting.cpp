@@ -1,19 +1,26 @@
+//:sorting.cpp
+
 #include <iostream>
+#include "sorting.h"
 
-#define N 20
-typedef int ElemType;
-
-void swap(ElemType A[], int i, int j)
+void Swap(int& a, int& b)
 {
-	ElemType temp = A[i];
+	int t = a;
+	a = b;
+	b = t;
+}
+
+void swap(int A[], int i, int j)
+{
+	int temp = A[i];
 	A[i] = A[j];
 	A[j] = temp;
 }
 
 //传递数组给函数时，实际是传递了一个指针，函数里的sizeof只能求出指针的大小，不能求数组的大小
-void PrintArray(ElemType A[], int n)
+void PrintArray(int A[], int n)
 {
-	std::cout << sizeof(A) << std::endl;
+	//std::cout << sizeof(A) << std::endl;
 	for (int i = 0; i < n; ++i)
 	{
 		std::cout << A[i] << ", ";
@@ -23,10 +30,10 @@ void PrintArray(ElemType A[], int n)
 }
 
 //直接插入排序，稳定，最坏时间O(n^2)，辅助空间O(1)
-void InsertSort(ElemType A[], int n)
+void InsertSort(int A[], int n)
 {
 	int i, j;
-	ElemType temp;
+	int temp;
 	if (n >= 2)
 	{
 		for (i = 1; i < n; i ++)
@@ -43,10 +50,10 @@ void InsertSort(ElemType A[], int n)
 	}
 }
 //希尔插入排序，不稳定，时间复杂度依赖于增量序列涉及数学难题约为O(n^1.3)最坏也是O(n^2)，辅助空间O(1)
-void ShellSort(ElemType A[], int n)
+void ShellSort(int A[], int n)
 {
 	int dk, i, j;
-	ElemType temp;
+	int temp;
 	//步长变化
 	for (dk = n/2; dk >= 1; dk = dk/2)
 	{
@@ -66,7 +73,7 @@ void ShellSort(ElemType A[], int n)
 	}
 }
 //交换，冒泡排序，最坏情况和平均时间复杂度为O(n^2)，空间复杂度O(1)，稳定
-void BubbleSort(ElemType A[], int n)
+void BubbleSort(int A[], int n)
 {
 	int i, j, flag, temp;
 	//小元素上浮，第0、1、2、3。。。依次排好序
@@ -89,47 +96,48 @@ void BubbleSort(ElemType A[], int n)
 	}
 }
 //前后两个指针向中间扫描，不稳定
-int LHPartition(ElemType A[], int low, int high)
+int LHPartition(int A[], int low, int high)
 {
-	ElemType pivot = A[low];
+	int pivot = A[low];
 	while(low < high)
 	{
-		while(low < high && A[high] >= pivot) --high;
+		while(low < high && A[high] >= pivot) 
+			--high;
 		A[low] = A[high];
-		while(low < high && A[low] <= pivot) ++low;
+		while(low < high && A[low] <= pivot) 
+			++low;
 		A[high] = A[low];
 	}
 	A[low] = pivot;
 	return low;
 }
 //半区保序的Partition，指针从哪边开始，哪个半区就是保序的
-int LLPartition(ElemType A[], int low, int high)
+int LLPartition(int A[], int low, int high)
 {
 	//选择基准元，以最右边一个为基准
-	ElemType pivot = A[high];
-	ElemType temp;
-	//i指针为左区指针，依次存放不大于temp的元素
+	int pivot = A[high];
+	int temp;
+	//i指针为左区指针，依次"存放"不大于pivot的元素
 	int i = low - 1;
-	//j指针从左向右依次扫描，发现不大于temp的元素
+	//j指针从左向右依次扫描，"发现"不大于pivot的元素
 	for (int j = low; j < high; j ++)
 	{
+		//找到不大于枢纽元的元素位置
 		if (A[j] <= pivot)
 		{
 			++ i;
-			temp = A[i];
-			//把满足条件的j放到左区i位置
-			A[i] = A[j];
-			A[j] = temp;
+			if (i != j)
+				//把满足条件的j放到左区i位置
+				Swap(A[i], A[j]);
 		}
+		//没找到则继续向右扫描，直到到达尾部
 	}
 	//最后把枢纽元交换到中间
-	temp = A[i+1];
-	A[i+1] = A[high];
-	A[high] = A[i+1];
+	Swap(A[i+1], A[high]);
 	//返回枢纽元位置
 	return i+1;
 }
-void QuickSort(ElemType A[], int low, int high)
+void QuickSort(int A[], int low, int high)
 {
 	if (low < high)
 	{
@@ -230,7 +238,7 @@ void getTopK(int input[], int n, int output[], int k)
 	}
 }
 //选择，简单选择排序，时间复杂度始终是O(n^2)，空间复杂度O(1)，不稳定（交换时被前面换到后面）
-void SelectionSort(ElemType A[], int n)
+void SelectionSort(int A[], int n)
 {
 	int min;
 	for (int i = 0; i < n; i ++)
@@ -248,7 +256,7 @@ void SelectionSort(ElemType A[], int n)
 	}
 }
 
-void AdjustDown(ElemType A[], int k, int len)
+void AdjustDown(int A[], int k, int len)
 {
 	//A[0]位置缓存当前子树的根节点
 	A[0] = A[k];
@@ -271,12 +279,12 @@ void AdjustDown(ElemType A[], int k, int len)
 	A[k] = A[0];
 }
 //选择，堆排序，最好最坏平均情况下时间复杂度为O(nlogn)，空间复杂度为O(1)，建堆的时间复杂度为O(n)
-void buildMaxHeap(ElemType A[], int len)
+void buildMaxHeap(int A[], int len)
 {
 	for (int i = len/2; i > 0; i --)
 		AdjustDown(A, i, len);
 }
-void HeapSort(ElemType A[], int n)
+void HeapSort(int A[], int n)
 {
 	buildMaxHeap(A, n);
 	// >1表示最后剩一个根节点未排序时，它正好就是在哪个位置，无需交换
@@ -289,9 +297,9 @@ void HeapSort(ElemType A[], int n)
 	}
 }
 
-ElemType B[N]; 
+int B[N]; 
 //A是原始数组，全局变量B是辅助缓存数组，对low~mid, mid+1~high进行合并
-void Merge(ElemType A[], int low, int mid, int high)
+void Merge(int A[], int low, int mid, int high)
 {
 	int i, j, k;
 	//先把A中原来的数值缓存在B中，排好序的再放到A中
@@ -306,12 +314,12 @@ void Merge(ElemType A[], int low, int mid, int high)
 		else
 			A[k] = B[j++];
 	}
-	//最后如果由个半区剩下了元素，则把剩下的复制到A中
+	//最后如果有个半区剩下了元素，则把剩下的复制到A中
 	while (i <= mid) A[k++] = B[j++];
 	while (j <= high) A[k++] = B[j++];
 }
 //归并排序，每一趟归并的时间复杂度为O(n)，共需进行log n趟归并，所以算法的时间复杂度为O(n log n)，空间复杂度为O(n)，稳定
-void MergeSort(ElemType A[], int low, int high)
+void MergeSort(int A[], int low, int high)
 {
 	//至少2个元素，如果递归到只有1个元素则不会执行下一层MergeSort，返回到上一层执行Merge
 	if (low < high)
@@ -373,7 +381,7 @@ void mergeTwoArray(int a[], int b[], int n, int m)
 
 //原地归并相关函数
 //将长度为n的数组逆序
-void reverse(ElemType *arr, int n)
+void reverse(int *arr, int n)
 {
 	int i = 0, j = n - 1;
 	while (i < j)
@@ -387,7 +395,7 @@ void reverse(ElemType *arr, int n)
 //相当于把arr指向区域的前i个元素和后n-i个元素整体位置交换
 // |  i   |      n-i     |
 // |      n-i     |  i   |
-void exchange(ElemType *arr, int n, int i)
+void exchange(int *arr, int n, int i)
 {
 	reverse(arr, i);
 	reverse(arr+i, n-i);
@@ -397,7 +405,7 @@ void exchange(ElemType *arr, int n, int i)
 // | begin   , , , | i      , , , , | mid    , , , | j      , , , |
 // |原左区中较小的 | 原左区中较大的 |原右区中较小的|原右区中较大的|
 // | 位置保持      | 和右区较小交换 |和左区较大交换| 位置暂时保持 |
-void inSituMerge(ElemType *arr, int begin, int mid, int end)
+void inSituMerge(int *arr, int begin, int mid, int end)
 {
 	int i = begin, j = mid, k = end;
 	//循环条件是半区指针不越界
@@ -419,7 +427,7 @@ void inSituMerge(ElemType *arr, int begin, int mid, int end)
 		i = i + step;
 	}
 }
-void InSituMergeSort(ElemType *arr, int low, int high)
+void InSituMergeSort(int *arr, int low, int high)
 {
 	if (low < high)
 	{
@@ -430,12 +438,13 @@ void InSituMergeSort(ElemType *arr, int low, int high)
 		inSituMerge(arr, low, mid+1, high);
 	}
 }
+/*
 int main(int argc, char const *argv[])
 {
-	ElemType A[] = {1, 4, 6, 2, 6, 7, 2, 3, 9, 1, 10};
+	int A[] = {1, 4, 6, 2, 6, 7, 2, 3, 9, 1, 10};
 	//这里还是可以求数组大小的
-	std::cout << sizeof(A)/sizeof(ElemType) << std::endl;
-	int n = sizeof(A)/sizeof(ElemType);
+	std::cout << sizeof(A)/sizeof(int) << std::endl;
+	int n = sizeof(A)/sizeof(int);
 	//InsertSort(A, n);
 	//ShellSort(A, n);
 	//BubbleSort(A, n);
@@ -452,4 +461,4 @@ int main(int argc, char const *argv[])
 	PrintArray(three, 10);
 
 	return 0;
-}
+}*/

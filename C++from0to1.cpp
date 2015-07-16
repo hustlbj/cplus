@@ -6,13 +6,15 @@
 #include <sstream>
 #include <fstream>
 #include <cstring>
+#include <stack>
+#include <exception>
+#include <stdexcept>
+
 #include "list.h"
 #include "tree.h"
 #include "queue_2s.h"
 #include "stack_2q.h"
-#include <stack>
-#include <exception>
-#include <stdexcept>
+#include "sorting.h"
 //#include <mutex>  c++11
 using namespace std;
 
@@ -527,6 +529,33 @@ int main(int argc, char const *argv[])
 	queueUsingStacks();
 	//栈测试
 	stackUsingQueues();
+
+	//排序测试
+	int sA = 10;
+	int sB = 20;
+	Swap(sA, sB);
+	std::cout << "Swap: " << sA << ", " << sB << std::endl;
+	int sortA[] = {1, 4, 6, 2, 6, 7, 2, 3, 9, 1, 10};
+	//这里还是可以求数组大小的
+	std::cout << "sortArray size: " << sizeof(sortA) / sizeof(int) << std::endl;
+	int n = sizeof(sortA)/sizeof(int);
+	//InsertSort(sortA, n);
+	//ShellSort(sortA, n);
+	//BubbleSort(sortA, n);
+	std::cout << "Before sort: ";
+	PrintArray(sortA, n);
+	std::cout << "Quick sort: ";
+	QuickSort(sortA, 0, n-1);
+	//SelectionSort(sortA, n);
+	//HeapSort(sortA, n);
+	//MergeSort(sortA, 0, n-1);
+	//InSituMergeSort(sortA, 0, n-1);
+	PrintArray(sortA, n);
+	char partitionString[7] = {'a', 'A', 'Z', 'd', 'B', 's', 'b'};
+	CharPartition(partitionString, 0, 6);
+	int threeCollection[] = {0, 1, 2, 1, 1, 2, 0, 2, 1, 0};
+	ThreePartition(threeCollection, 0, 9);
+	PrintArray(threeCollection, 10);
 
 	return 0;
 }
