@@ -462,6 +462,72 @@ void PrintListReversingly_Iteratively(ListNode* pHead)
  	std::cout << std::endl;
  }
 
+ /*
+ T8. 求旋转数组中的最小数字
+ 输入一个递增排序的数组的一个旋转，如一个递增数组{1,2,3,4,5}的一个旋转{3,4,5,1,2}
+ 根据{3,4,5,1,2}，输出最小元素1
+ 最差情况：顺序查找O(n)
+ 二分查找O(logn)
+ */
+ //顺序查找，这里没有做异常输入的处理，调用者注意
+ int MinInOrder(int* numbers, int left, int right)
+ {
+ 	int min = numbers[left];
+ 	for (int i = left + 1; i <= right ; ++i)
+ 	{
+ 		if (numbers[i] < min)
+ 			min = numbers[i];
+ 	}
+ 	return min;
+ }
+ /*
+ 3, 4, 5, 6, 1, 2 偶数个
+ 5, 6, 1, 2
+ 6, 1, 2
+ 6, 1
+ left, right 返回right
+
+ 3, 4, 5, 1, 3 奇数个，left=right != mid
+ 5, 1, 3
+ 5, 1
+left, right 返回right
+
+1,1,0,1 left=right=mid
+直接顺序查找
+ */
+ int MinInRotate(int* numbers, int length)
+ {
+ 	if (numbers == NULL || length < 1)
+ 	{
+ 		std::runtime_error err("Min() : invalid input, NULL");
+ 		throw err;
+ 	}
+ 	int left = 0, right = length - 1;
+ 	int mid  = left;
+ 	// 旋转数组的左区比右区大（除特例外），并且最左比最右的还要大，左右两个指针不断向中间靠，找到最小元
+ 	// 特例是{1,0,1,1,1} {1,1,1,0,1}  left right mid的值相等
+ 	while (numbers[left] >= numbers[right])
+ 	{
+ 		if (right - left == 1)
+ 		{
+ 			mid = right;
+ 			break;
+ 		}
+ 		mid = (left + right) / 2;
+ 		//这里求解只有一个元素的数组 和 特例数组，用顺序查找
+ 		if (numbers[left] == numbers[right] && numbers[mid] == numbers[left])
+ 			return MinInOrder(numbers, left, right);
+
+ 		// 当前mid还处在左区，而真正的最小值还在右边，所以让left = min，往右移动检查
+ 		if (numbers[mid] >= numbers[left])
+ 			left = mid;
+ 		// 当前mid还处在右区，而真正的最小值还在左边，所以让right = min，往左移动检查
+ 		else if (numbers[mid] <= numbers[right])
+ 			right = mid;
+ 	}
+ 	return numbers[mid];
+ }
+
 int main(int argc, char const *argv[])
 {
 	//sumFromInput();
@@ -556,6 +622,10 @@ int main(int argc, char const *argv[])
 	int threeCollection[] = {0, 1, 2, 1, 1, 2, 0, 2, 1, 0};
 	ThreePartition(threeCollection, 0, 9);
 	PrintArray(threeCollection, 10);
+
+	//旋转数组的最小数字
+	int rotateArray[] = {3,4,5,6,1,2,3};
+	std::cout << "Min value in rotateArray: " << MinInRotate(rotateArray, 7) << std::endl;
 
 	return 0;
 }
