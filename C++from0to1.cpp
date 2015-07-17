@@ -1,5 +1,5 @@
 /*
-	C++ 入门练习
+	C++ 入门练习，剑指offer例题
 */
 #include <iostream>
 #include <string>
@@ -15,6 +15,7 @@
 #include "queue_2s.h"
 #include "stack_2q.h"
 #include "sorting.h"
+#include "C++from1to2.h"
 //#include <mutex>  c++11
 using namespace std;
 
@@ -528,6 +529,64 @@ left, right 返回right
  	return numbers[mid];
  }
 
+/*
+ T9. 循环实现斐波拉契数列。可以解决：
+ 青蛙跳台阶问题
+ 铺地板问题
+*/
+ //输入限制为unsigned int型。。
+long long Fibonaci(unsigned n)
+{
+	int result[2] = {0, 1};
+	if (n < 2)
+		return result[n];
+
+	long long fibN_1 = 1;
+	long long fibN_2 = 0;
+	long long fibN = 0;
+	for (unsigned int i = 2; i <= n; i ++)
+	{
+		fibN = fibN_1 + fibN_2;
+		fibN_2 = fibN_1;
+		fibN_1 = fibN;
+	}
+	return fibN;
+}
+
+/*
+ T10. 二进制中1的个数
+ 注意正数和负数，位运算实现
+ 相关题目：判断一个整数是不是2的整数次方，如果是，它的二进制表示中只有一位是1，(n-1)&n就等于0
+ 两个整数m和n，计算m的二进制表示中需要改变多少位才能变成n的二进制表示，先对二者做异或再统计结果中1的位数。
+*/
+//方法1：n & flag, flag = flag<<1，直接用&检测每一位
+//输入：有符号int
+//输出：该数字二进制表示的1的个数
+int NumberOf1(int n)
+{
+	unsigned int flag = 1;
+	int count = 0;
+	while (flag)
+	{
+		if (n & flag)
+			count ++;
+		flag = flag << 1;
+	}
+	return count;
+}
+//用减1的方法计算，一个数减去1以后，最右边的1变成0，并且该位以后的0都变成1
+//再“与”原数，就消去了最右边的那个1，即(n-1) & n 消去了最右边的1
+int NumberOf1New(int n)
+{
+	int count = 0;
+	while (n)
+	{
+		++ count;
+		n = (n - 1) & n;
+	}
+	return count;
+}
+
 int main(int argc, char const *argv[])
 {
 	//sumFromInput();
@@ -626,6 +685,28 @@ int main(int argc, char const *argv[])
 	//旋转数组的最小数字
 	int rotateArray[] = {3,4,5,6,1,2,3};
 	std::cout << "Min value in rotateArray: " << MinInRotate(rotateArray, 7) << std::endl;
+
+	//斐波拉契数
+	std::cout << "Fibonaci(100): " << Fibonaci(100) << std::endl;
+
+	//位运算
+	std::cout << "NumberOf1(127): " << NumberOf1(127) << ", " << NumberOf1New(127) << std::endl;
+
+	//T11. 数值的整数次方运算
+	std::cout << "PowerWithUnsignedExponent(0.2, 3): " << PowerWithUnsignedExponent(0.2, 3) << std::endl;
+	std::cout << "Power(0.2, -3): " << Power(0.2, -3) << std::endl;
+	std::cout << "g_InvalidInput: " << g_InvalidInput << std::endl;
+
+	//T12. 打印从1到最大的n位数
+	Print1ToMaxOfNDigits(2);
+	// 两个用字符串表示的大数相加，只考虑两个正数
+	char number1[] = "123";
+	char number2[] = "11111";
+	char* result = NULL;
+	result = AddTowBigDigits(number1, number2);
+	std::cout << "AddTwoBigDigits(): " << result << std::endl;
+	delete[] result;
+
 
 	return 0;
 }
