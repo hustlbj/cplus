@@ -699,6 +699,8 @@ int main(int argc, char const *argv[])
 
 	//T12. 打印从1到最大的n位数
 	Print1ToMaxOfNDigits(2);
+	std::cout << std::endl;
+	
 	// 两个用字符串表示的大数相加，只考虑两个正数
 	char number1[] = "123";
 	char number2[] = "11111";

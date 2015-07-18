@@ -65,4 +65,41 @@ void List::RemoveNode(ListNode** pHead, ElementType value)
 		}
 	}
 }
+/*
+ T13. O(1)时间复杂度删除单链表中的节点
+*/
+void List::DeleteNode(ListNode** pHead, ListNode* pToBeDeleted)
+{
+	if (pHead == NULL || pToBeDeleted == NULL)
+		return ;
+	//如果要删除的Node不是尾节点，把该节点的下一个节点的内容复制过来，直接删除下一个节点即可
+	if (pToBeDeleted->m_pNext != NULL)
+	{
+		ListNode* pNext = pToBeDeleted->m_pNext;
+		pToBeDeleted->m_nValue = pNext->m_nValue;
+		pToBeDeleted->m_pNext = pNext->m_pNext;
+		delete pNext;
+		pNext = NULL;
+	}
+	//要删除的Node是头节点，直接删除
+	else if (*pHead == pToBeDeleted)
+	{
+		delete pToBeDeleted;
+		pToBeDeleted = NULL;
+		*pHead = NULL;
+	}
+	//要删除的Node是尾节点，并且链表中还有多个节点，此时只能遍历删除
+	else
+	{
+		ListNode* pNode = *pHead;
+		//找到前一个节点
+		while (pNode->m_pNext != pToBeDeleted)
+		{
+			pNode = pNode->m_pNext;
+		}
+		pNode->m_pNext = NULL;
+		delete pToBeDeleted;
+		pToBeDeleted = NULL;
 
+	}
+}

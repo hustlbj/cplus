@@ -135,7 +135,7 @@ char* AddTowBigDigits(char* number1, char* number2)
 	{
 		std::cout << "remainIndex: " << remainIndex << " ";
 		int bitSum = remainNumber[remainIndex--] - '0' + nTakeOver;
-		std::cout << "bit:" << bitSum << " ";
+		std::cout << "bit:" << bitSum << " " << std::endl;
 		if (bitSum >= 10)
 		{
 			nTakeOver = 1;
@@ -145,6 +145,14 @@ char* AddTowBigDigits(char* number1, char* number2)
 	}
 	if (nTakeOver)
 		result[0] = '1';
+	else
+	{
+		char* new_result = new char[strlen(result) - 1];
+		strcpy(new_result, result + 1);
+		delete[] result;
+		result = new_result;
+		new_result = NULL;
+	}
 	return result;
 }
 void PrintNumber(char* number)
