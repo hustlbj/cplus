@@ -23,6 +23,7 @@ public:
 	void RemoveNode(ListNode** pHead, ElementType value);
 	//要删除的节点是ListNode，里面保存了完整的value和next，所以删除该节点是有可能在O(1)时间完成的，如果只是传入value，那还得比较
 	void DeleteNode(ListNode** pHead, ListNode* pToBeDeleted);
+	void Clean(ListNode** pHead);
 	ListNode* m_pList; 
 private:
 	

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "C++from1to2.h"
+#include "list.h"
 /*
  T11. 求数值的整数次方
  输入：数值是double型有符号，指数是有符号int型
@@ -183,4 +184,73 @@ void Print1ToMaxOfNDigits(int n)
 		printf("\t");
 	}
 	delete[] number;
+}
+
+/*
+ T14. 调整数组顺序使奇数位于偶数前面
+ 用到了类似快速排序的Partition
+*/
+ void ReprderOddEven(int* pData, unsigned int length)
+ {
+ 	if (pData == NULL || length == 0)
+ 		return;
+ 	//头指针
+ 	int* pBegin = pData;
+ 	//尾指针
+ 	int* pEnd = pData + length - 1;
+
+ 	while (pBegin < pEnd)
+ 	{
+ 		//寻找偶数
+ 		while (pBegin < pEnd && (*pBegin & 0x1) != 0)
+ 			pBegin ++;
+ 		while (pBegin < pEnd && (*pEnd & 0x1) == 0)
+ 			pEnd --;
+ 		if (pBegin < pEnd)
+ 		{
+ 			int temp = *pBegin;
+ 			*pBegin = *pEnd;
+ 			*pEnd = temp;
+ 		}
+ 	}
+ }
+
+ /*
+ T15. 链表中的倒数第k个节点
+ 思路：单向从头到尾遍历的链表，假设有n个节点，倒数第k个节点就是从头开始的第n-k+1也就是第n-(k-1)个节点
+ 大概的图形如下：翔知道前面的n-(k-1)，需要知道n和(k-1)，具体+1还是-1可举例论证。
+ |---n-(k-1)---|------(k-1)------|
+ |----------------n--------------|
+ 所以，用两个指针，第一个先向前走k-1，然后从第k步开始，第二个指针也开始从链表头部向前走，两指针的距离保持在k-1。
+ 相关题目：求链表的中间节点，用两个指针从头开始，一个指针每次走两步，一个指针每次走一步，走的快的到达末尾时，走的慢的正好在链表中间。
+ 判断一个单向链表是否形成了环形结构，也是两个指针一个走两步一个走一步，如果走得快的追上了走的慢的指针，那么就是环形链表。
+ */
+// 注意输入：NULL，k=0，链表总长度不够k个这些边界和异常
+ListNode* FindKthToTail(ListNode* pHead, unsigned int k)
+{
+	if (pHead == NULL || k == 0)
+	{
+		return NULL;
+	}
+	ListNode* pA = pHead;
+	ListNode* pB = NULL;
+	for (unsigned int i = 0; i < k - 1; ++i)
+	{
+		if (pA->m_pNext != NULL)
+		{
+			pA = pA->m_pNext;
+		}
+		//不够k个，返回NULL
+		else
+		{
+			return NULL;
+		}
+	}
+	pB = pHead;
+	while (pA ->m_pNext != NULL)
+	{
+		pA = pA->m_pNext;
+		pB = pB->m_pNext;
+	}
+	return pB;
 }

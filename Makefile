@@ -16,7 +16,7 @@ list.o : list.h list.cpp
 sorting.o : sorting.h sorting.cpp
 	$(CC) -c sorting.cpp
 
-C++from1to2.o : C++from1to2.h C++from1to2.cpp
+C++from1to2.o : $(HEADERS) C++from1to2.cpp
 	$(CC) -c C++from1to2.cpp
 
 

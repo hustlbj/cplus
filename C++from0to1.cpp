@@ -642,6 +642,14 @@ int main(int argc, char const *argv[])
 		myList.AddToTail(&myList.m_pList, i);
 	}
 	PrintListReversingly_Recursively(myList.m_pList);
+	//T15. 输出倒数第K个节点
+	ListNode* kNode = NULL;
+	// 9 8 7，倒数第3个是7
+	kNode = FindKthToTail(myList.m_pList, 3);
+	std::cout << "The Kth Node is: " << kNode->m_nValue << std::endl;
+	//释放链表中每个new的ListNode
+	myList.Clean(&myList.m_pList);
+
 
 	//二叉树测试
 	int preorder[] = {1, 2, 4, 7, 3, 5, 6, 8};
@@ -700,7 +708,7 @@ int main(int argc, char const *argv[])
 	//T12. 打印从1到最大的n位数
 	Print1ToMaxOfNDigits(2);
 	std::cout << std::endl;
-	
+
 	// 两个用字符串表示的大数相加，只考虑两个正数
 	char number1[] = "123";
 	char number2[] = "11111";
@@ -709,6 +717,10 @@ int main(int argc, char const *argv[])
 	std::cout << "AddTwoBigDigits(): " << result << std::endl;
 	delete[] result;
 
+	//T14. 调整数组顺序使奇数位于偶数前面
+	int reorderArray[] = {1, 2, 3, 4, 5};
+	ReprderOddEven(reorderArray, 5);
+	PrintArray(reorderArray, 5);
 
 	return 0;
 }

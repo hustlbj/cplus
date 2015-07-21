@@ -27,11 +27,11 @@ void List::AddToTail(ListNode** pHead, ElementType value)
 		printf("insert: %d\t", pNew->m_nValue);
 	}
 }
-
+//这里可以不必传入指针的地址。。如果链表为空，则ListNode* p == NULL，而 &p 肯定不为NULL，因为这是一个存在的变量
 void List::RemoveNode(ListNode** pHead, ElementType value)
 {
 	//链表为空
-	if (pHead == NULL || *pHead == NULL)
+	if (*pHead == NULL)
 		return;
 	ListNode* pToBeDeleted = NULL;
 	//要删除的节点是头节点
@@ -67,10 +67,11 @@ void List::RemoveNode(ListNode** pHead, ElementType value)
 }
 /*
  T13. O(1)时间复杂度删除单链表中的节点
+ 这里可以不必传入指针的地址。。同上。。。
 */
 void List::DeleteNode(ListNode** pHead, ListNode* pToBeDeleted)
 {
-	if (pHead == NULL || pToBeDeleted == NULL)
+	if (!(*pHead) || !pToBeDeleted)
 		return ;
 	//如果要删除的Node不是尾节点，把该节点的下一个节点的内容复制过来，直接删除下一个节点即可
 	if (pToBeDeleted->m_pNext != NULL)
@@ -102,4 +103,21 @@ void List::DeleteNode(ListNode** pHead, ListNode* pToBeDeleted)
 		pToBeDeleted = NULL;
 
 	}
+}
+
+//这里需要传入指针的地址，以便删除头节点并让链表指向NULL
+void List::Clean(ListNode** pHead)
+{
+	if (!(*pHead))
+		return;
+	//从头开始清除
+	ListNode* temp = NULL;
+	while (*pHead)
+	{
+		temp = *pHead;
+		*pHead = (*pHead)->m_pNext;
+		delete temp;
+	}
+
+	*pHead = NULL;
 }
