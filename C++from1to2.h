@@ -9,3 +9,4 @@ void Print1ToMaxOfNDigits(int n);
 char* AddTowBigDigits(char* number1, char* number2);
 void ReprderOddEven(int* pData, unsigned int length);
 ListNode* FindKthToTail(ListNode* pHead, unsigned int k);
+ListNode* ReverseList(ListNode* pHead);

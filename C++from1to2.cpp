@@ -254,3 +254,33 @@ ListNode* FindKthToTail(ListNode* pHead, unsigned int k)
 	}
 	return pB;
 }
+
+/*
+ T16. 反转链表
+ 输入：链表的头节点
+ 输出：反转后链表的头节点
+ 用到3个指针，当调整节点i的m_pNext指向前一个节点h时，还需要保存i的后一个节点j
+ 最后的m_pNext==NULL的节点就是反转后的头节点
+*/
+ListNode* ReverseList(ListNode* pHead)
+{
+	//pNode是当前调整的节点
+	ListNode* pNode = pHead;
+	ListNode* pPrev = NULL;
+	ListNode* pNext = NULL;
+	//已经排除了链表为空的情况
+	while (pNode != NULL)
+	{
+		//先保存next节点，再修改当前节点
+		pNext = pNode->m_pNext; 
+		pNode->m_pNext = pPrev; 
+		//下一轮
+		pPrev = pNode;
+		pNode = pNext;
+	}
+	//链表不为空的时候，pNode最终会走到NULL，所以返回pPrev
+	if (pNode == NULL && pHead != NULL)
+		return pPrev;
+	else
+		return NULL;
+}

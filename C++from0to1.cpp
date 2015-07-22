@@ -631,24 +631,39 @@ int main(int argc, char const *argv[])
 	std::cout << "ReplaceBlank: " << string << std::endl;
 
 	//链表测试
+	std::cout << "***********************List test**********************" << std::endl;
 	List myList;
 	/*
 	ListNode* aNode = new ListNode();
 	aNode->m_nValue = 0;
 	aNode->m_pNext = NULL;
-	myList.m_pList = aNode;*/
+	mList.m_pList = aNode;*/
+	std::cout << "**AddToTail()" << std::endl;
 	for (int i = 0; i < 10; i ++)
 	{
 		myList.AddToTail(&myList.m_pList, i);
 	}
+	std::cout << std::endl;
+	std::cout << "**PrintListReversingly()" << std::endl;
 	PrintListReversingly_Recursively(myList.m_pList);
+	std::cout << std::endl;
+
 	//T15. 输出倒数第K个节点
+	std::cout << "**FindKthToTail()" << std::endl;
 	ListNode* kNode = NULL;
 	// 9 8 7，倒数第3个是7
 	kNode = FindKthToTail(myList.m_pList, 3);
 	std::cout << "The Kth Node is: " << kNode->m_nValue << std::endl;
+
+	//T16. 反转链表
+	std::cout << "**ReverseList()" << std::endl;;
+	myList.m_pList = ReverseList(myList.m_pList);
+	std::cout << "**PrintListReversingly()" << std::endl;
+	PrintListReversingly_Recursively(myList.m_pList);
+	std::cout << std::endl;
 	//释放链表中每个new的ListNode
 	myList.Clean(&myList.m_pList);
+	std::cout << "***********************List test end**********************" << std::endl;
 
 
 	//二叉树测试
