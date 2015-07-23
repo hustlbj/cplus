@@ -655,14 +655,28 @@ int main(int argc, char const *argv[])
 	kNode = FindKthToTail(myList.m_pList, 3);
 	std::cout << "The Kth Node is: " << kNode->m_nValue << std::endl;
 
+	// T17. 合并两个增序链表
+	List myList2;
+	for (int i = 10; i < 15; i ++)
+	{
+		myList2.AddToTail(&myList2.m_pList, i);
+	}
+	std::cout << "**Merge()" << std::endl;
+	myList.m_pList = Merge(myList.m_pList, myList2.m_pList);
+	std::cout << "**PrintListReversingly()" << std::endl;
+	PrintListReversingly_Recursively(myList.m_pList);
+	std::cout << std::endl;
+
 	//T16. 反转链表
 	std::cout << "**ReverseList()" << std::endl;;
 	myList.m_pList = ReverseList(myList.m_pList);
 	std::cout << "**PrintListReversingly()" << std::endl;
 	PrintListReversingly_Recursively(myList.m_pList);
 	std::cout << std::endl;
+
 	//释放链表中每个new的ListNode
 	myList.Clean(&myList.m_pList);
+	myList.m_pList = NULL;
 	std::cout << "***********************List test end**********************" << std::endl;
 
 

@@ -10,3 +10,4 @@ char* AddTowBigDigits(char* number1, char* number2);
 void ReprderOddEven(int* pData, unsigned int length);
 ListNode* FindKthToTail(ListNode* pHead, unsigned int k);
 ListNode* ReverseList(ListNode* pHead);
+ListNode* Merge(ListNode* pHead1, ListNode* pHead2);

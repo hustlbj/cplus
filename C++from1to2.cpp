@@ -284,3 +284,32 @@ ListNode* ReverseList(ListNode* pHead)
 	else
 		return NULL;
 }
+
+/*
+ T17. 合并两个排序的链表
+ 输入：两个按值大小增序排列的链表
+ 输出：将两个排序链表合并，输出一个增序链表
+ 解题思路：递归，对于两个子链表L1和L2，如果L1的头节点小于L2的头节点，则L1做头，对L1的next和L2继续合并，反之就是L2做头。。
+*/
+ListNode* Merge(ListNode* pHead1, ListNode* pHead2)
+{
+	if (pHead1 == NULL)
+		return pHead2;
+	else if (pHead2 == NULL)
+		return pHead1;
+	ListNode* oneMerge = NULL;
+	//在这之前已经保证了pHead1和pHead2都不为空
+	if (pHead1->m_nValue < pHead2->m_nValue)
+	{
+		oneMerge = pHead1;
+		std::cout << "merge: " << oneMerge->m_nValue << ", ";
+		oneMerge->m_pNext = Merge(pHead1->m_pNext, pHead2);
+	}
+	else
+	{
+		oneMerge = pHead2;
+		std::cout << "merge: " << oneMerge->m_nValue << ", ";
+		oneMerge->m_pNext = Merge(pHead1, pHead2->m_pNext);
+	}
+	return oneMerge;
+}
