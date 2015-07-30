@@ -388,7 +388,7 @@ void PrintListReversingly_Iteratively(ListNode* pHead)
  			return root;
  		else
  		{
- 			std::runtime_error err("Invalid input.");
+ 			std::logic_error err("Invalid input.");
  			throw err;
  		}
  	}
@@ -400,7 +400,7 @@ void PrintListReversingly_Iteratively(ListNode* pHead)
  	//前序和中序遍历冲突，输入错误
  	if (rootInorder == endInorder && *rootInorder != rootValue)
  	{
- 		std::runtime_error err("Invalid input.");
+ 		std::logic_error err("Invalid input.");
  		throw err;
  	}
  	/*
@@ -500,7 +500,7 @@ left, right 返回right
  {
  	if (numbers == NULL || length < 1)
  	{
- 		std::runtime_error err("Min() : invalid input, NULL");
+ 		std::logic_error err("Min() : invalid input, NULL");
  		throw err;
  	}
  	int left = 0, right = length - 1;
@@ -750,6 +750,12 @@ int main(int argc, char const *argv[])
 	int reorderArray[] = {1, 2, 3, 4, 5};
 	ReprderOddEven(reorderArray, 5);
 	PrintArray(reorderArray, 5);
+
+	//T20.顺时针打印矩阵
+	//这里注意，多维数组初始化只有第一维大小可以省略，二维数组名是int(*)[N]类型，并不是int**类型
+	//array[0][0]取进二维数组的第一个元素，&array[0][0]就是int*类型，表示二维数组第一个元素的地址，后续+1依次访问
+	int clockwiseArray[][4] = {{1, 2, 3, 4,}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+	PrintMatrixClockwisely(&clockwiseArray[0][0], 4, 4);
 
 	return 0;
 }

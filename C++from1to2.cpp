@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "C++from1to2.h"
 #include "list.h"
+#include "tree.h"
 /*
  T11. 求数值的整数次方
  输入：数值是double型有符号，指数是有符号int型
@@ -313,3 +314,110 @@ ListNode* Merge(ListNode* pHead1, ListNode* pHead2)
 	}
 	return oneMerge;
 }
+
+/*
+ T18. 树的子结构
+ 输入：两棵二叉树A和B，判断B是不是A的子结构
+*/
+ bool DoesTree1HaveTree2(BinaryTreeNode* pRoot1, BinaryTreeNode* pRoot2)
+ {
+ 	if (pRoot2 == NULL)
+ 		return true;
+ 	if (pRoot1 == NULL)
+ 		return false;
+ 	if (pRoot1->m_nValue != pRoot2->m_nValue)
+ 		return false;
+
+ 	return DoesTree1HaveTree2(pRoot1->m_pLeft, pRoot2->m_pLeft) &&
+ 		DoesTree1HaveTree2(pRoot1->m_pRight, pRoot2->m_pRight);
+ }
+ bool HasSubTree(BinaryTreeNode* pRoot1, BinaryTreeNode* pRoot2)
+ {
+ 	bool result = false;
+ 	if (pRoot1 != NULL && pRoot2 != NULL)
+ 	{
+ 		// pRoot1中找到一个点和pRoot2的根节点相等，则递归去判断
+ 		if (pRoot1->m_nValue == pRoot2->m_nValue)
+ 			result = DoesTree1HaveTree2(pRoot1, pRoot2);
+ 		// 接着在pRoot1中寻找
+ 		if (!result)
+ 			result = HasSubTree(pRoot1->m_pLeft, pRoot2);
+ 		if (!result)
+ 			result = HasSubTree(pRoot1->m_pRight, pRoot2);
+ 	}
+ 	return result;
+ }
+
+ /*
+ T19. 求一棵树的镜像，与原树左右对称
+ 输入：一颗二叉树
+ 思路：递归求解，先对根节点的两个直系左右子节点（下方的子树也跟随交换），然后再分别对左右子树递归
+ */
+ void MirrorRecursively(BinaryTreeNode* pNode)
+ {
+ 	if (pNode == NULL)
+ 		return;
+ 	//到达叶子节点
+ 	if (pNode->m_pLeft == NULL && pNode->m_pRight == NULL)
+ 		return;
+ 	BinaryTreeNode *pTemp = pNode->m_pLeft;
+ 	pNode->m_pLeft = pNode->m_pRight;
+ 	pNode->m_pRight = pTemp;
+ 	if (pNode->m_pLeft)
+ 		MirrorRecursively(pNode->m_pLeft);
+ 	if (pNode->m_pRight)
+ 		MirrorRecursively(pNode->m_pRight);
+ }
+
+ /*
+ T20. 顺时针打印矩阵
+ 输入：一个矩阵
+ 输出：从外向里顺时针的顺序依次打印出每一个数字（（0,0）顶点开始）
+ 思路：假设矩阵rows * columns，题意可以理解为从外向里一圈一圈打印，每次都是从这一圈的左上顶点开始
+ 	此题的关键是，终止条件是什么？举几个例子画图分析，由于是一圈一圈打印，所以上和下、左和右存在共存关系，
+ 	不难发现，循环继续的条件是columns > startX * 2并且rows > startY * 2，其中(startX, startY)是这一圈的左上角顶点
+ 	另外，最后一圈可能退化成只有一行、只有一列、只有一个数字
+ */
+ void PrintMatrixInCircle(int* numbers, int columns, int rows, int start)
+ {
+ 	int endX = columns - 1 - start;
+ 	int endY = rows - 1 - start;
+ 	//从左到右打印一行
+ 	for (int i = start; i <= endX; i ++)
+ 	{
+ 		//printf("%d\t", numbers[start][i]);
+ 		printf("%d\t", numbers[start * columns + i]);
+ 	}
+ 	//从上倒下打印一列
+ 	if (start < endY)
+ 	{
+ 		for (int i = start + 1; i <= endY; i ++)
+ 			//printf("%d\t", numbers[i][endX]);
+ 			printf("%d\t", numbers[i * columns + endX]);
+ 	}
+ 	//从右边到左边打印一行
+ 	if (start < endX && start < endY)
+ 	{
+ 		for (int i = endX - 1; i >= start; -- i)
+ 			//printf("%d\t", numbers[endY][i]);
+ 			printf("%d\t", numbers[endY * columns + i]);
+ 	}
+ 	//从下到上打印一列
+ 	if (start < endX && start < endY - 1)
+ 	{
+ 		for (int i = endY - 1; i >= start + 1; -- i)
+ 			printf("%d\t", numbers[i * columns + start]);
+ 	}
+ }
+ void PrintMatrixClockwisely(int* numbers, int columns, int rows)
+ {
+ 	if (numbers == NULL || columns <= 0 || rows <= 0)
+ 		return;
+ 	int start = 0;
+ 	while (columns > start * 2 && rows > start * 2)
+ 	{
+ 		PrintMatrixInCircle(&numbers[0], columns, rows, start);
+ 		++ start;
+ 	}
+ 	printf("\n");
+ }
