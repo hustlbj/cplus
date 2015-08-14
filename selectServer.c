@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <error.h>
+#include <errno.h>
 #include <netinet/in.h>
 #include <sys/select.h>
 #include <sys/types.h>
@@ -20,17 +20,19 @@ int main(int argc, char **argv)
 	int nready, client[FD_SIZE]; //接收select返回值，保存客户端套接字
 	int lens;
 	size_t n; //read字节数
+	//fd_set的数据结构，实际上是一long类型的数组，
+	//每一个数组元素都能与一打开的文件句柄（不管是socket句柄，还是其他文件或命名管道或设备句柄）建立联系
 	fd_set rset, allset;
 	char buf[BUF_LEN];
 	socklen_t clilen;
-	struct sockaddr_in servaddr, chiaddr;
+	struct sockaddr_in servaddr, cliaddr;
 
-	if ((listenfd = sock(AF_INET, SOCK_STREAM, 0)) == -1)
+	if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
 		printf("Create socket Error: %d\n", errno);
 		exit(EXIT_FAILURE);
 	}
-
+	//bzero是传统BSD函数，属于POSIX标准，使用头文件string.h，bzero无返回值，推荐使用memset替代bzero
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -55,6 +57,7 @@ int main(int argc, char **argv)
 		client[i] = -1;
 	}
 	FD_ZERO(&allset);
+	//把服务端侦听的listenfd放到allset中
 	FD_SET(listenfd, &allset);
 
 	while(1)
@@ -71,12 +74,13 @@ int main(int argc, char **argv)
 			continue;
 		}
 
+		//如果是侦听的listenfd就绪，则说明是有新的连接进入
 		if(FD_ISSET(listenfd, &rset))
 		{
 			clilen = sizeof(cliaddr);
 			printf("Start doing...\n");
 			//新连接
-			if ((connfd = accept(listenfd, (struct sockaddr *) &cliaddr, &clilen)) == -1)
+			if ((	) == -1)
 			{
 				printf("Accept Error: %d\n", errno);
 				continue;
@@ -107,6 +111,7 @@ int main(int argc, char **argv)
 			}
 		}
 
+		//否则轮训一遍，看看是哪个客户端socket的读就绪
 		for (i = 0; i <= maxi; i ++)
 		{
 			if ((sockfd = client[i]) > 0)
@@ -126,9 +131,9 @@ int main(int argc, char **argv)
 					if (n == 0)
 					{
 						printf("No data\n");
-						close(sockfd);
-						FD_CLR(sockfd, &allset);
-						client[i] = -1;
+						//close(sockfd);
+						//FD_CLR(sockfd, &allset);
+						//client[i] = -1;
 						continue;
 					}
 
