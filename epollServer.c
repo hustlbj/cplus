@@ -60,7 +60,7 @@ void setnonblocking(int sock)
 }
 int main(int argc, char** argv)
 {
-	int listenfd, connfd, sockfd, epfd, nfds;
+	int listenfd, connfd, sockfd, epfd, nfds, n = 0;
 	char line[BUF_SIZE];
 	socklen_t clilen;
 	struct epoll_event ev, events[EVENTS_NUM];
@@ -77,6 +77,7 @@ int main(int argc, char** argv)
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	serveraddr.sin_port = htons(SERV_PORT);
+	bzero(line, BUF_SIZE);
 
 	for (; ;)
 	{
@@ -104,9 +105,48 @@ int main(int argc, char** argv)
 			//已连接的客户，收到数据
 			else if (events[i].events & EPOLLIN)
 			{
-				
+				printf("EPOLLIN\n");
+				if ((sockfd = events[i].data.fd) < 0)
+					continue;
+				if ((n = read(sockfd, line, BUF_SIZE)) < 0)
+				{
+					if (errno == ECONNREST)
+					{
+						close(sockfd);
+						events[i].data.fd = -1;
+					}
+					else
+					{
+						printf("Readline error\n");
+					}
+				}
+				else if (n == 0)
+				{
+					close(sockfd);
+					events[i].data.fd = -1;
+				}
+				else
+				{
+					line[n] = '\0';
+					printf("Read from %d: %s\n", sockfd, line);
+
+					//注册写操作事件
+					ev.data.fd = sockfd;
+					ev.events = EPOLLOUT | EPOLLET;
+					epoll_ctl(epfd, EPOLL_CTL_MOD, sockfd, &ev);
+				}
+			}
+			//如果有数据要发送
+			else if (events[i].events & EPOLLOUT)
+			{
+				sockfd = events[i].data.fd;
+				write(sockfd, line, n);
+				ev.data.fd = sockfd;
+				ev.events = POLLIN | EPOLLET;
+				epoll_ctl(epfd, EPOLL_CTL_MOD, sockfd, &ev);
 			}
 		}
 	}
 
+	return 0;
 }
