@@ -7,7 +7,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-#define BUF_LEN 1024
+#define BUF_LEN 128*1024
 #define SERVER_PORT 6000
 
 int main(int argc, char const **argv)
@@ -37,7 +37,11 @@ int main(int argc, char const **argv)
 	printf("Connected! You can send message.\n");
 	while(1)
 	{
-		gets(buf);
+		//把buf填充成?
+		memset(buf, 63, BUF_LEN);
+		buf[BUF_LEN-1] = '\0';
+		//gets、fgets会把输入串之后自动添加\0
+		//fgets(buf, BUF_LEN, stdin);
 		if (strcmp(buf, "q") == 0)
 		{
 			write(connfd, buf, message_len);
@@ -46,12 +50,13 @@ int main(int argc, char const **argv)
 		}
 		if ((message_len = strlen(buf)) > 0)
 		{
+
 			write(connfd, buf, message_len);
 			memset(buf, 0, BUF_LEN);
 			message_len = read(connfd, buf, BUF_LEN);
 			if (message_len > 0)
 			{
-				printf("Receive from server: %s\n", buf);
+				printf("Receive from server: %d\n", strlen(buf));
 			}
 		}
 	}

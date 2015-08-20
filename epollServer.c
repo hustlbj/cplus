@@ -41,7 +41,7 @@
 */
 #define SERV_PORT 6000
 #define MAX_FD 1024
-#define BUF_SIZE 1024
+#define BUF_SIZE 128*1024 //128K
 #define EVENTS_NUM 20
 #define TIMEOUT 1000
 #define MAX_BACK 20
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 				else
 				{
 					line[n] = '\0';
-					printf("Read from %d: %s\n", sockfd, line);
+					printf("Read from %d: %d\n", sockfd, strlen(line));
 
 					//注册写操作事件
 					//ev.data.fd = sockfd;
