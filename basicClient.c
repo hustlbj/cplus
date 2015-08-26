@@ -7,7 +7,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-#define BUF_LEN 128*1024
+#define BUF_LEN 64*1024
 #define SERVER_PORT 8888
 
 int main(int argc, char const **argv)
@@ -19,7 +19,7 @@ int main(int argc, char const **argv)
 	memset(&remote_addr, 0, sizeof(remote_addr));
 	memset(buf, 0, BUF_LEN);
 	remote_addr.sin_family = AF_INET;
-	remote_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	remote_addr.sin_addr.s_addr = inet_addr("52.69.4.66");
 	remote_addr.sin_port = htons(SERVER_PORT);
 	connfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (connfd < 0)
@@ -39,9 +39,10 @@ int main(int argc, char const **argv)
 	{
 		//把buf填充成?
 		memset(buf, 63, BUF_LEN);
-		buf[BUF_LEN-1] = '\0';
+		//buf[BUF_LEN-1] = '\0';
 		//gets、fgets会把输入串之后自动添加\0
 		//fgets(buf, BUF_LEN, stdin);
+		
 		if (strcmp(buf, "q") == 0)
 		{
 			write(connfd, buf, message_len);
@@ -51,9 +52,10 @@ int main(int argc, char const **argv)
 		if ((message_len = strlen(buf)) > 0)
 		{
 
-			write(connfd, buf, message_len);
+			message_len = send(connfd, buf, BUF_LEN, 0);
+			printf("Send size: %d\n", message_len);
 			memset(buf, 0, BUF_LEN);
-			message_len = read(connfd, buf, BUF_LEN);
+			message_len = recv(connfd, buf, BUF_LEN, 0);
 			if (message_len > 0)
 			{
 				printf("Receive from server: %d\n", strlen(buf));

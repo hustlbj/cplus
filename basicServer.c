@@ -21,7 +21,7 @@ int main(int argc, char const *argv[])
 	memset(buf, 0, 128*1024);
 	server_sock.sin_family = AF_INET;
 	server_sock.sin_port = htons(8888);
-	server_sock.sin_addr.s_addr = inet_addr("127.0.0.1");
+	server_sock.sin_addr.s_addr = inet_addr("202.114.6.66");
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (listenfd < 0)
 	{
