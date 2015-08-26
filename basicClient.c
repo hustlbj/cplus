@@ -8,7 +8,7 @@
 #include <string.h>
 
 #define BUF_LEN 128*1024
-#define SERVER_PORT 6000
+#define SERVER_PORT 8888
 
 int main(int argc, char const **argv)
 {
