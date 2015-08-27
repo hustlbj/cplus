@@ -35,6 +35,8 @@ int main(int argc, char const **argv)
 		return -1;
 	}
 	printf("Connected! You can send message.\n");
+	printf("Sleep after conncted!\n");
+	sleep(5);
 	while(1)
 	{
 		//把buf填充成?
