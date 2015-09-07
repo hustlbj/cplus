@@ -54,7 +54,7 @@ void ShellSort(int A[], int n)
 {
 	int dk, i, j;
 	int temp;
-	//步长变化
+	//步长变化，从n/2开始，每轮步长降低一半
 	for (dk = n/2; dk >= 1; dk = dk/2)
 	{
 		//从dk索引开始以后的元素，分别向前面的[0...dk-1]进行插入排序
@@ -66,6 +66,7 @@ void ShellSort(int A[], int n)
 			while (j >= 0 && temp < A[j])
 			{
 				A[j+dk] = A[j];
+				//这里和直接插入排序不一样，增量是一个步长而不是1
 				j = j - dk;
 			}
 			A[j+dk] = temp;
@@ -281,6 +282,7 @@ void AdjustDown(int A[], int k, int len)
 //选择，堆排序，最好最坏平均情况下时间复杂度为O(nlogn)，空间复杂度为O(1)，建堆的时间复杂度为O(n)
 void buildMaxHeap(int A[], int len)
 {
+	//构建堆最多用到2N次比较
 	for (int i = len/2; i > 0; i --)
 		AdjustDown(A, i, len);
 }
